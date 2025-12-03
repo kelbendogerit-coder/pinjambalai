@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Peminjaman Balai Kelurahan</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        header {
+            border-bottom: 3px dashed #ff6b6b;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #ff6b6b;
+            margin: 0;
+            font-size: 2em;
+            display: flex;
+            align-items: center;
+        }
+
+        h1 img {
+            width: 30px;
+            margin-right: 10px;
+        }
+
+        button,
+        .button {
+            background-color: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover,
+        .button:hover {
+            background-color: #e55a5a;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .controls .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .controls select,
+        .controls input[type="text"] {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            flex-grow: 1;
+            margin-right: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #ff6b6b;
+            color: white;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .badge {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .badge-pending {
+            background-color: #ffcc00;
+            color: #333;
+        }
+
+        .badge-approved {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .badge-rejected {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        #login-section {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 10px;
+        }
+
+        #login-section button {
+            background-color: #333;
+        }
+
+        #login-section button:hover {
+            background-color: #555;
+        }
+
+        .admin-controls button {
+            margin-right: 5px;
+            padding: 5px 8px;
+            font-size: 0.8em;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div id="login-section">
+            <button id="login-btn">Login Admin</button>
+        </div>
+
+        <header>
+            <h1><span role="img" aria-label="schedule">📋</span> Jadwal Peminjaman</h1>
+        </header>
+
+        <div id="bookingModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Form Pengajuan Peminjaman</h2>
+                <form id="bookingForm">
+                    <div class="form-group">
+                        <label for="name">Nama Lengkap</label>
+                        <input type="text" id="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="whatsapp">Nomor WhatsApp</label>
+                        <input type="tel" id="whatsapp" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="venue">Venue</label>
+                        <select id="venue" required>
+                            <option value="">Pilih Venue</option>
+                            <option value="Balai Kelurahan">Balai Kelurahan</option>
+                            <option value="Ruang Rapat">Ruang Rapat</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="date">Tanggal</label>
+                        <input type="date" id="date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="start">Jam Mulai (HH:MM)</label>
+                        <input type="time" id="start" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="end">Jam Selesai (HH:MM)</label>
+                        <input type="time" id="end" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="notes">Deskripsi Kegiatan</label>
+                        <textarea id="notes" required></textarea>
+                    </div>
+                    <button type="submit">Ajukan Peminjaman</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="controls">
+            <div style="display: flex; flex-grow: 1; gap: 10px;">
+                <input type="text" id="search-input" placeholder="Cari..." style="flex: 2;">
+                <select id="venue-filter" style="flex: 1;">
+                    <option value="">Semua Venue</option>
+                </select>
+                <select id="status-filter" style="flex: 1;">
+                    <option value="">Semua Status</option>
+                    <option value="pending">Pending</option>
+                    <option value="approved">Approved</option>
+                    <option value="rejected">Rejected</option>
+                </select>
+            </div>
+            <div class="actions">
+                <button onclick="document.getElementById('bookingModal').style.display='block'">Ajukan
+                    Peminjaman</button>
+                <button onclick="exportToXLSX()">XLSX</button>
+                <button onclick="init()">Refresh</button>
+            </div>
+        </div>
+
+        <div id="loading-indicator" style="text-align: center; margin-top: 50px; font-size: 1.2em;">Memuat data...</div>
+        <table id="dataTable" style="display:none;">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Pemohon / Deskripsi</th>
+                    <th>Tanggal</th>
+                    <th>Jam</th>
+                    <th>Status</th>
+                    <th id="admin-header" style="display:none;">Aksi / Info Admin</th>
+                </tr>
+            </thead>
+            <tbody id="dataBody">
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        const GAS_URL = '<?= ScriptApp.getService().getUrl() ?>';
+        let isUserAdmin = false;
+        let originalBookings = []; // Menyimpan data asli
+        let filteredBookings = []; // Data yang difilter
+
+        // --- UTILITY FUNCTIONS ---
+
+        /**
+         * Mengubah string waktu ISO (misal: 1899-12-30T02:17:56.000Z) menjadi HH:MM.
+         * Dibuat aman dari error toLowerCase/replace pada Number/Undefined.
+         * @param {string | number} timeString
+         */
+        function formatTime(timeString) {
+            if (!timeString) return '-';
+            // Paksa nilai menjadi string 
+            const timeStr = String(timeString);
+
+            // Cari posisi 'T' (pemisah tanggal dan waktu dalam format ISO)
+            const tIndex = timeStr.indexOf('T');
+
+            if (tIndex !== -1) {
+                // Jika format ISO, ambil 5 karakter setelah 'T' (HH:MM)
+                return timeStr.slice(tIndex + 1, tIndex + 6);
+            }
+
+            // Jika format sudah HH:MM
+            if (timeStr.match(/^\d{2}:\d{2}$/)) {
+                return timeStr;
+            }
+
+            return '-';
+        }
+
+        function getStatusBadge(status) {
+            status = (status || 'pending').toLowerCase();
+            let className = `badge-${status}`;
+            return `<span class="badge ${className}">${status.toUpperCase()}</span>`;
+        }
+
+        // --- DATA HANDLING ---
+
+        async function loadBookings(isAdmin) {
+            document.getElementById('loading-indicator').style.display = 'block';
+            document.getElementById('dataTable').style.display = 'none';
+
+            const action = isAdmin ? 'get_all' : 'get';
+
+            try {
+                const response = await fetch(`${GAS_URL}?action=${action}`);
+                if (!response.ok) throw new Error('Network response was not ok');
+
+                const data = await response.json();
+
+                if (data.result === 'error') {
+                    throw new Error(data.message || 'Error dari Apps Script');
+                }
+
+                // Normalisasi dan pengamanan data dari Apps Script
+                originalBookings = data.map(b => ({
+                    id: String(b.id || b.ID || ''),
+                    row_index: b.row_index,
+                    timestamp: b.timestamp || b.waktu_submit || b.WAKTU_SUBMIT,
+                    // Pastikan semua nilai yang akan diolah menjadi string (Penting!)
+                    name: (b.nama_lengkap || b.name || '').toLowerCase(),
+                    email: (b.email || b.EMAIL || '').toLowerCase(),
+                    whatsapp: String(b.whatsapp || ''), // Pastikan ini string
+                    venue: (b.venue || b.VENUE || '').toLowerCase(),
+                    date: b.tanggal || b.TANGGAL, // Biarkan sebagai Date/String
+                    start: b.mulai || b.MULAI,
+                    end: b.selesai || b.SELESAI,
+                    notes: (b.deskripsi || b.notes || '').toLowerCase(),
+                    status: (b.status || b.STATUS || 'pending').toLowerCase(),
+                    admin_id: (b.admin_id || ''),
+                    admin_notes: (b.catatan_admin || b.CATATAN_ADMIN || ''),
+                }));
+
+                // Filter data awal dan render
+                filterAndRenderTable();
+                populateVenueFilter();
+
+            } catch (error) {
+                console.error('Error loading bookings:', error);
+                alert('Gagal memuat jadwal: ' + error.message);
+            } finally {
+                document.getElementById('loading-indicator').style.display = 'none';
+                document.getElementById('dataTable').style.display = 'table';
+            }
+        }
+
+        function populateVenueFilter() {
+            const venueFilter = document.getElementById('venue-filter');
+            // Kosongkan kecuali opsi default 'Semua Venue'
+            venueFilter.innerHTML = '<option value="">Semua Venue</option>';
+
+            const venues = new Set();
+            originalBookings.forEach(booking => {
+                if (booking.venue) {
+                    venues.add(booking.venue.charAt(0).toUpperCase() + booking.venue.slice(1));
+                }
+            });
+
+            venues.forEach(venue => {
+                const option = document.createElement('option');
+                option.value = venue;
+                option.textContent = venue;
+                venueFilter.appendChild(option);
+            });
+        }
+
+        function filterAndRenderTable() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const venueFilter = document.getElementById('venue-filter').value.toLowerCase();
+            const statusFilter = document.getElementById('status-filter').value.toLowerCase();
+
+            filteredBookings = originalBookings.filter(booking => {
+
+                // Perbaikan Error: Pastikan properti yang diakses adalah string yang aman
+                const bookingStatus = (booking.status || '').toLowerCase();
+                const bookingVenue = (booking.venue || '').toLowerCase();
+                const bookingName = (booking.name || '').toLowerCase();
+                const bookingNotes = (booking.notes || '').toLowerCase();
+                const bookingDate = (booking.date || '').toLowerCase();
+
+                // 1. Filter Visibilitas (Hanya Admin yang melihat semua status)
+                if (!isUserAdmin && bookingStatus !== 'approved') {
+                    return false;
+                }
+
+                // 2. Filter Venue
+                if (venueFilter && bookingVenue !== venueFilter) {
+                    return false;
+                }
+
+                // 3. Filter Status
+                if (statusFilter && bookingStatus !== statusFilter) {
+                    return false;
+                }
+
+                // 4. Filter Search Term
+                if (searchTerm) {
+                    let matchesSearch = bookingName.includes(searchTerm) ||
+                        bookingNotes.includes(searchTerm) ||
+                        bookingDate.includes(searchTerm);
+                    if (!matchesSearch) {
+                        return false;
+                    }
+                }
+
+                return true;
+            });
+
+            renderTable(filteredBookings);
+        }
+
+        function renderTable(bookings) {
+            const dataBody = document.getElementById('dataBody');
+            dataBody.innerHTML = '';
+            const adminHeader = document.getElementById('admin-header');
+
+            // Atur tampilan header Admin
+            adminHeader.style.display = isUserAdmin ? '' : 'none';
+
+            bookings.forEach(booking => {
+                const row = dataBody.insertRow();
+
+                // Col 1: ID
+                row.insertCell().textContent = `#${booking.id}`;
+
+                // Col 2: Pemohon / Deskripsi
+                const nameCell = row.insertCell();
+                nameCell.innerHTML = `<strong>${booking.name}</strong><br>
+                                  <span style="font-size: 0.9em; color: #555;">- / ${booking.notes.substring(0, 30)}...</span>`;
+                if (isUserAdmin && booking.whatsapp) {
+                    // Tautan WA untuk Admin (aman dari error replace pada Number)
+                    const cleanWa = String(booking.whatsapp).replace(/\D/g, '');
+                    nameCell.innerHTML += `<br><a href="https://wa.me/${cleanWa}" target="_blank" style="color: #25D366; font-size: 0.8em; text-decoration: none;">${booking.whatsapp}</a>`;
+                }
+
+                // Col 3: Tanggal
+                row.insertCell().textContent = booking.date ? new Date(booking.date).toLocaleDateString('id-ID', {
+                    day: '2-digit',
+                    month: 'long',
+                    year: 'numeric'
+                }) : '-';
+
+                // Col 4: Jam (HH:MM - HH:MM)
+                row.insertCell().textContent = `${formatTime(booking.start)} - ${formatTime(booking.end)}`;
+
+                // Col 5: Status
+                row.insertCell().innerHTML = getStatusBadge(booking.status);
+
+                // Col 6: Aksi / Info Admin (Hanya untuk Admin)
+                if (isUserAdmin) {
+                    const actionCell = row.insertCell();
+                    actionCell.classList.add('admin-controls');
+
+                    // Tambahkan tombol aksi
+                    if (booking.status !== 'approved') {
+                        actionCell.innerHTML += `<button onclick="updateStatus('${booking.id}', ${booking.row_index}, 'approved')">Setuju</button>`;
+                    }
+                    if (booking.status !== 'rejected') {
+                        actionCell.innerHTML += `<button onclick="updateStatus('${booking.id}', ${booking.row_index}, 'rejected')" style="background-color: #f44336;">Tolak</button>`;
+                    }
+
+                    // Tampilkan info Admin
+                    if (booking.admin_id) {
+                        actionCell.innerHTML += `<br><span style="font-size: 0.7em; color: #888;">Updated by: ${booking.admin_id}</span>`;
+                    }
+                    if (booking.admin_notes) {
+                        actionCell.innerHTML += `<br><span style="font-size: 0.7em; color: #555;">Note: ${booking.admin_notes.substring(0, 30)}...</span>`;
+                    }
+                }
+            });
+        }
+
+        // --- CRUD ACTIONS ---
+
+        async function submitBooking(event) {
+            event.preventDefault();
+
+            const data = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                whatsapp: document.getElementById('whatsapp').value,
+                venue: document.getElementById('venue').value,
+                date: document.getElementById('date').value,
+                start: document.getElementById('start').value,
+                end: document.getElementById('end').value,
+                notes: document.getElementById('notes').value
+            };
+
+            // Cek validasi jam
+            if (data.start >= data.end) {
+                alert('Jam Selesai harus lebih dari Jam Mulai.');
+                return;
+            }
+
+            try {
+                const response = await fetch(GAS_URL, {
+                    method: 'POST',
+                    body: new URLSearchParams({
+                        action: 'insert',
+                        ...data
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.result === 'success') {
+                    alert('Pengajuan berhasil diajukan! ID: ' + result.id + '. Silakan tunggu notifikasi email mengenai status pengajuan Anda.');
+                    document.getElementById('bookingModal').style.display = 'none';
+                    document.getElementById('bookingForm').reset();
+                    init(); // Refresh data
+                } else {
+                    alert('Gagal mengajukan peminjaman: ' + (result.message || 'Terjadi kesalahan tidak terduga.'));
+                }
+
+            } catch (error) {
+                console.error('Submit error:', error);
+                alert('Gagal koneksi ke server.');
+            }
+        }
+
+        // Fungsi Perbarui Status (dengan Catatan Admin)
+        async function updateStatus(id, row_index, new_status_action) {
+            const new_status = new_status_action.toLowerCase();
+
+            // --- INPUT CATATAN ADMIN BARU ---
+            const admin_notes = prompt(`Masukkan Catatan Admin untuk pemohon (Status: ${new_status.toUpperCase()}):`);
+
+            // Jika admin membatalkan prompt, hentikan proses
+            if (admin_notes === null) {
+                return;
+            }
+            // ---------------------------------
+
+            if (!['pending', 'approved', 'rejected'].includes(new_status)) {
+                alert('Status tidak valid. Silakan masukkan Pending, Approved, atau Rejected.');
+                return;
+            }
+
+            if (!confirm(`Yakin ingin mengubah status pengajuan ID ${id} menjadi ${new_status.toUpperCase()}?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(GAS_URL, {
+                    method: 'POST',
+                    body: new URLSearchParams({
+                        action: 'update_status',
+                        row_index: row_index,
+                        status: new_status,
+                        admin_notes: admin_notes // KIRIM CATATAN KE APPS SCRIPT
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.result === 'success') {
+                    alert(`Status pengajuan ID ${id} berhasil diperbarui menjadi ${new_status.toUpperCase()}. Notifikasi email dikirim.`);
+                    init(); // Muat ulang data setelah sukses
+                } else {
+                    alert('Gagal memperbarui status: ' + (result.error || 'Terjadi kesalahan tidak terduga.'));
+                }
+            } catch (error) {
+                console.error('Update status error:', error);
+                alert('Gagal koneksi ke server saat memperbarui status.');
+            }
+        }
+
+
+        // --- EXPORT FUNCTION ---
+        function exportToXLSX() {
+            if (filteredBookings.length === 0) {
+                alert('Tidak ada data untuk diekspor.');
+                return;
+            }
+
+            let csv = 'ID,Nama Lengkap,Email,WhatsApp,Venue,Tanggal,Jam Mulai,Jam Selesai,Deskripsi Kegiatan,Status,Admin ID\n';
+
+            filteredBookings.forEach(booking => {
+                const start = formatTime(booking.start);
+                const end = formatTime(booking.end);
+
+                // Buat baris CSV (Pastikan tidak ada koma di dalam nilai)
+                const row = [
+                    `#${booking.id}`,
+                    `"${booking.name.replace(/"/g, '""')}"`,
+                    `"${booking.email.replace(/"/g, '""')}"`,
+                    `"${String(booking.whatsapp).replace(/"/g, '""')}"`,
+                    `"${booking.venue.replace(/"/g, '""')}"`,
+                    `"${new Date(booking.date).toLocaleDateString('id-ID')}"`,
+                    `"${start}"`,
+                    `"${end}"`,
+                    `"${booking.notes.replace(/"/g, '""')}"`,
+                    `"${booking.status.toUpperCase()}"`,
+                    `"${booking.admin_id}"`
+                ];
+                csv += row.join(',') + '\n';
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", "Jadwal_Peminjaman.csv");
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+
+        // --- LOGIN / INISIALISASI ---
+
+        function checkLoginStatus() {
+            // Cek status login di local storage
+            isUserAdmin = localStorage.getItem('isAdmin') === 'true';
+            document.getElementById('login-btn').textContent = isUserAdmin ? 'Logout Admin' : 'Login Admin';
+            init();
+        }
+
+        function toggleLogin() {
+            if (isUserAdmin) {
+                // Logout
+                localStorage.removeItem('isAdmin');
+                isUserAdmin = false;
+            } else {
+                // Login
+                const password = prompt("Masukkan password admin:");
+                // GANTI DENGAN PASSWORD ADMIN ANDA YANG SEBENARNYA
+                if (password === "Patimura92@#%") {
+                    localStorage.setItem('isAdmin', 'true');
+                    isUserAdmin = true;
+                    alert('Login berhasil!');
+                } else if (password !== null) {
+                    alert('Password salah.');
+                }
+            }
+            checkLoginStatus(); // Panggil lagi untuk update tampilan
+        }
+
+        // Fungsi utama inisialisasi
+        function init() {
+            loadBookings(isUserAdmin);
+        }
+
+        // --- EVENT LISTENERS ---
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Init login status
+            checkLoginStatus();
+
+            // Listener untuk tombol Login/Logout
+            document.getElementById('login-btn').addEventListener('click', toggleLogin);
+
+            // Listener untuk Form Peminjaman
+            document.getElementById('bookingForm').addEventListener('submit', submitBooking);
+
+            // Listener untuk Filter
+            document.getElementById('search-input').addEventListener('input', filterAndRenderTable);
+            document.getElementById('venue-filter').addEventListener('change', filterAndRenderTable);
+            document.getElementById('status-filter').addEventListener('change', filterAndRenderTable);
+
+            // Listener untuk Modal
+            document.querySelector('.close').addEventListener('click', () => {
+                document.getElementById('bookingModal').style.display = 'none';
+            });
+            window.onclick = (event) => {
+                if (event.target === document.getElementById('bookingModal')) {
+                    document.getElementById('bookingModal').style.display = 'none';
+                }
+            };
+        });
+
+    </script>
+
+</body>
+
+</html>
