@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi GUEH | ELOH BISA PINJAM BALAI Kelurahan Bendogerit DISINI</title>
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@700&family=Roboto+Slab:wght@400;700&display=swap">
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+
+    <style>
+        /* ================================== */
+        /* === STYLE (CSS) APLIKASI RETRO === */
+        /* ================================== */
+
+        /* VARIABEL DAN PALET WARNA RETRO */
+        :root {
+            --color-primary-retro: #B83B5E;
+            /* Merah Tua/Maroon Retro */
+            --color-secondary-retro: #6A2C70;
+            /* Ungu Gelap */
+            --color-accent-retro: #F08A5D;
+            /* Orange Salmon */
+            --color-background-paper: #FFFDF7;
+            /* Kertas Kuning */
+            --color-text: #212121;
+            --color-border-dark: #6A2C70;
+            --shadow-deep: 5px 5px 0px rgba(184, 59, 94, 0.7);
+            /* Shadow Khas Retro */
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        /* BACKGROUND ARTISTIK SENI RUPA */
+        body {
+            font-family: 'Roboto Slab', serif;
+            color: var(--color-text);
+            line-height: 1.6;
+            margin: 0;
+
+            background-image: url('https://artsology.com/blog/wp-content/uploads/2024/03/fusion-of-symbols-a-la-basquiat.jpg');
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+
+            /* Overlay untuk Kontras */
+            background-color: rgba(255, 255, 255, 0.5);
+            background-blend-mode: overlay;
+        }
+
+        input,
+        select,
+        textarea,
+        button {
+            font-family: inherit;
+            font-size: 100%;
+            margin: 0;
+            border: 0;
+        }
+
+        a {
+            color: var(--color-primary-retro);
+            text-decoration: none;
+        }
+
+        /* LAYOUT UTAMA */
+        .wrap {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 15px;
+        }
+
+        /* HEADER RETRO */
+        header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            margin-bottom: 30px;
+            border-bottom: 5px solid var(--color-secondary-retro);
+        }
+
+        .brand {
+            font-family: 'Montserrat Alternates', sans-serif;
+            font-weight: 700;
+            font-size: 30px;
+            color: var(--color-secondary-retro);
+            text-shadow: 2px 2px 0px var(--color-accent-retro);
+            display: flex;
+            align-items: center;
+        }
+
+        /* FORMULIR & CARD STYLE */
+        .form-center-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .card,
+        .form-card {
+            background: var(--color-background-paper);
+            padding: 30px;
+            border-radius: 0;
+            box-shadow: var(--shadow-deep);
+            border: 2px solid var(--color-border-dark);
+            margin-bottom: 25px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h3 {
+            font-family: 'Montserrat Alternates', sans-serif;
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-primary-retro);
+            border-bottom: 3px dashed var(--color-accent-retro);
+            padding-bottom: 10px;
+        }
+
+        /* FORM STYLE */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px 15px;
+        }
+
+        label {
+            font-weight: 700;
+            color: var(--color-secondary-retro);
+        }
+
+        .form input,
+        .form select,
+        .form textarea {
+            padding: 12px;
+            border-radius: 0;
+            border: 1px solid var(--color-border-dark);
+            background-color: var(--color-background-paper);
+            transition: border-color 0.2s, background-color 0.2s;
+            width: 100%;
+        }
+
+        #adminPassword {
+            width: auto;
+        }
+
+        .form input:focus,
+        .form select:focus,
+        .form textarea:focus {
+            background-color: #ffe8d6;
+            outline: none;
+            border-color: var(--color-primary-retro);
+        }
+
+        .form-group.form-full {
+            grid-column: 1 / -1;
+        }
+
+        .muted {
+            color: var(--color-primary-retro);
+            font-size: 0.8rem;
+            font-style: italic;
+        }
+
+        /* BUTTONS RETRO */
+        .btn {
+            background: var(--color-primary-retro);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 0;
+            cursor: pointer;
+            font-weight: 700;
+            transition: background-color 0.2s;
+            border: 2px solid var(--color-border-dark);
+            box-shadow: 2px 2px 0px var(--color-border-dark);
+        }
+
+        .btn:hover:not(:disabled) {
+            background: var(--color-secondary-retro);
+            box-shadow: none;
+            transform: translate(2px, 2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn.small {
+            padding: 8px 12px;
+            font-size: 0.9rem;
+        }
+
+        .btn.ghost {
+            background: var(--color-background-paper);
+            color: var(--color-primary-retro);
+            border: 2px solid var(--color-primary-retro);
+            box-shadow: none;
+            padding: 7px 12px;
+        }
+
+        .btn.ghost:hover:not(:disabled) {
+            background: var(--color-accent-retro);
+            color: white;
+        }
+
+        /* PESAN KONFIRMASI BARU */
+        #confirmation-message {
+            display: none;
+            padding: 20px;
+            border: 2px solid #25D366;
+            background-color: #e6fff0;
+            border-radius: 0;
+            text-align: center;
+            margin-top: 20px;
+            box-shadow: 2px 2px 0px rgba(37, 211, 102, 0.7);
+        }
+
+
+        /* TABLE STYLE */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 700px;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            border: 1px solid #dcdcdc;
+            font-size: 0.9rem;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--color-accent-retro);
+            color: var(--color-background-paper);
+            font-family: 'Montserrat Alternates', sans-serif;
+            font-weight: 700;
+        }
+
+        /* STATUS BADGES RETRO */
+        .status {
+            padding: 5px 10px;
+            font-size: 0.8rem;
+            border-radius: 0;
+            font-weight: 700;
+            display: inline-block;
+            border: 1px solid currentColor;
+        }
+
+        .s-pending {
+            background: #fffbe6;
+            color: #9d5c0d;
+        }
+
+        .s-approved {
+            background: #d0f0c0;
+            color: #3c763d;
+        }
+
+        .s-rejected {
+            background: #f2dede;
+            color: #a94442;
+        }
+
+        .action-btn-group {
+            display: flex;
+            gap: 5px;
+            flex-wrap: nowrap;
+        }
+
+        /* ADMIN DASHBOARD LAYOUT */
+        .grid-main {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            /* Skema 2/3 untuk tabel, 1/3 untuk dashboard */
+            gap: 30px;
+        }
+
+        @media (max-width: 1000px) {
+            .grid-main {
+                grid-template-columns: 1fr;
+                /* Tumpuk di layar kecil */
+            }
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .stat-box {
+            background: var(--color-accent-retro);
+            color: white;
+            padding: 15px;
+            border: 2px solid var(--color-border-dark);
+            text-align: center;
+            box-shadow: 1px 1px 0px var(--color-border-dark);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .charts {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* FIX FOR CHARTS */
+        #chartStatus,
+        #chartTrend {
+            max-height: 250px;
+        }
+
+        .header-admin-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <header>
+            <div class="brand">
+                🏛️ GUEH (ELOH BISA PINJAM BALAI DISINI)
+            </div>
+
+            <div class="header-admin-controls">
+                <span class="muted" style="white-space: nowrap; color: var(--color-text);">Akses Admin:</span>
+                <input id="adminPassword" type="password" placeholder="Password"
+                    style="border: 1px solid var(--color-border-dark); background: var(--color-background-paper); padding: 8px;" />
+                <button id="adminLoginBtn" class="btn small btn-login">Login</button>
+                <button id="logoutBtn" class="btn small btn-logout hidden">Logout</button>
+            </div>
+
+        </header>
+
+        <div class="form-center-wrapper">
+            <form id="booking-form" class="form-card form">
+                <h3>📝 Formulir Peminjaman Balai Kelurahan</h3>
+                <div class="form-grid">
+                    <div class="form-group form-full">
+                        <label for="name">Nama Lengkap Pemohon</label>
+                        <input id="name" placeholder="Nama sesuai KTP" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Alamat Email</label>
+                        <input id="email" type="email" placeholder="aktif@email.com" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="whatsapp">Nomor WhatsApp Aktif</label>
+                        <input id="whatsapp" placeholder="08xxxxxxxxxxx" required />
+                        <div class="muted">Notifikasi status akan dikirimkan ke email dan Admin akan menggunakan
+                            WA ini.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="venue">Venue Peminjaman</label>
+                        <select id="venue" required>
+                            <option>Balai Kelurahan</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="date">Tanggal Kegiatan</label>
+                        <input id="date" type="date" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="start">Waktu Mulai</label>
+                        <input id="start" type="time" value="09:00" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="end">Waktu Selesai</label>
+                        <input id="end" type="time" value="11:00" required />
+                    </div>
+                    <div class="form-group form-full">
+                        <label for="notes">Deskripsi / Keperluan Kegiatan</label>
+                        <textarea id="notes" rows="3" placeholder="Contoh: Rapat koordinasi RT/RW."
+                            style="resize: vertical;"></textarea>
+                    </div>
+                </div>
+                <div style="display:flex;justify-content:flex-end;margin-top:20px;">
+                    <button id="submitBtn" class="btn" type="submit">Kirim Pengajuan</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="form-center-wrapper">
+            <div id="confirmation-message" class="form-card">
+            </div>
+        </div>
+
+
+        <div class="grid-main">
+            <div>
+                <div class="card">
+                    <h3 style="display:flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 1.5rem;">📋 Jadwal Peminjaman</span>
+                        <div style="display: flex; gap: 8px;">
+                            <button id="downloadBtn" class="btn small ghost hidden" title="Unduh Data Excel">📥
+                                XLSX</button>
+                            <button id="refreshBtn" class="btn small ghost">Refresh</button>
+                        </div>
+                    </h3>
+                    <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">
+                        <input id="searchInput" placeholder="Cari..."
+                            style="flex:1; min-width: 150px; padding: 10px; border: 1px solid var(--color-border-dark); border-radius: 0; background: var(--color-background-paper);" />
+                        <select id="filterVenue"
+                            style="padding: 10px; border: 1px solid var(--color-border-dark); border-radius: 0; flex: 1; background: var(--color-background-paper);">
+                            <option value="">Semua Venue</option>
+                            <option>Balai Kelurahan</option>
+                        </select>
+                        <select id="filterStatus"
+                            style="padding: 10px; border: 1px solid var(--color-border-dark); border-radius: 0; flex: 1; background: var(--color-background-paper);">
+                            <option value="">Semua Status</option>
+                            <option value="pending" class="hidden-admin-status">Menunggu</option>
+                            <option value="approved">Disetujui</option>
+                            <option value="rejected" class="hidden-admin-status">Ditolak</option>
+                        </select>
+                    </div>
+                    <div class="table-container">
+                        <table id="bookingTable">
+                            <thead>
+                                <tr>
+                                    <th>Pemohon / Deskripsi</th>
+                                    <th>Tanggal</th>
+                                    <th>Jam</th>
+                                    <th>Status</th>
+                                    <th>Aksi (Admin)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="noDataMsg" class="muted"
+                        style="text-align: center; margin-top: 20px; display: none; color: var(--color-secondary-retro);">
+                        Data pengajuan kosong atau tidak ditemukan.
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="card">
+                    <h3>📊 Dashboard Admin</h3>
+                    <div id="adminControls" class="hidden">
+                        <p class="muted" style="margin: 5px 0 15px 0;">Ringkasan Data:</p>
+                        <div class="stats-grid">
+                            <div class="stat-box">
+                                <div id="statTotal" class="stat-value">0</div>
+                                <div>Total</div>
+                            </div>
+                            <div class="stat-box" style="background: var(--color-accent-retro);">
+                                <div id="statPending" class="stat-value">0</div>
+                                <div>Menunggu</div>
+                            </div>
+                            <div class="stat-box" style="background: #3c763d;">
+                                <div id="statApproved" class="stat-value">0</div>
+                                <div>Disetujui</div>
+                            </div>
+                        </div>
+                    </div>
+                    <p id="adminStatusMsg" class="muted" style="text-align: center; color: var(--color-primary-retro);">
+                        Login Admin di atas untuk melihat detail statistik.</p>
+                </div>
+
+                <div class="card">
+                    <h3>📈 Tren Peminjaman</h3>
+                    <div class="charts">
+                        <canvas id="chartStatus"></canvas>
+                        <canvas id="chartTrend" style="margin-top: 25px;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- KONFIGURASI PENTING ---
+        // GANTI DENGAN URL WEB APP PUBLIK (HARUS SAMA DENGAN ADMIN_WEB_APP_ENDPOINT JIKA HANYA 1 DEPLOYMENT)
+        const PUBLIC_WEB_APP_ENDPOINT = 'https://script.google.com/macros/s/AKfycbyqgcsbEFOmWS9k4tSwjJlFHU_kaVS9zfTR-LVJ93m72aLMguvUUyXYnciXfL_LYa35zQ/exec';
+        const ADMIN_WEB_APP_ENDPOINT = 'https://script.google.com/macros/s/AKfycbyqgcsbEFOmWS9k4tSwjJlFHU_kaVS9zfTR-LVJ93m72aLMguvUUyXYnciXfL_LYa35zQ/exec';
+        const ADMIN_PASSWORD = 'Patimura92@#%'; // JANGAN LUPA GANTI!
+
+        const APPROVED_COLOR = '#3c763d';
+        const PENDING_COLOR = '#9d5c0d';
+        const REJECTED_COLOR = '#a94442';
+
+        // --- ELEMENT DOM ---
+        const bookingForm = document.getElementById('booking-form');
+        const bookingTableBody = document.querySelector('#bookingTable tbody');
+        const adminPasswordInput = document.getElementById('adminPassword');
+        const adminLoginBtn = document.getElementById('adminLoginBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const adminControls = document.getElementById('adminControls');
+        const adminStatusMsg = document.getElementById('adminStatusMsg');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const searchInput = document.getElementById('searchInput');
+        const filterVenue = document.getElementById('filterVenue');
+        const filterStatus = document.getElementById('filterStatus');
+        const noDataMsg = document.getElementById('noDataMsg');
+        const confirmationMessage = document.getElementById('confirmation-message');
+        const hiddenAdminStatusOptions = document.querySelectorAll('.hidden-admin-status');
+        const submitBtn = document.getElementById('submitBtn');
+
+        // --- VARIABEL GLOBAL ---
+        let isUserAdmin = false;
+        let bookings = [];
+        let chartStatusInstance = null;
+        let chartTrendInstance = null;
+
+        // --- UTILITY FUNCTIONS ---
+
+        /** Menampilkan pesan konfirmasi berhasil. */
+        function showConfirmation(message) {
+            confirmationMessage.innerHTML = `
+                <h4>✅ Pengajuan Berhasil Terkirim!</h4>
+                <p style="margin-bottom: 10px;">${message}</p>
+                <a href="javascript:void(0)" onclick="init()" style="font-weight: 700;">Lihat Jadwal Terkini</a>
+            `;
+            confirmationMessage.style.display = 'block';
+            bookingForm.reset();
+            bookingForm.parentElement.classList.add('hidden');
+            setTimeout(() => {
+                confirmationMessage.style.display = 'none';
+                bookingForm.parentElement.classList.remove('hidden');
+            }, 10000);
+        }
+        // File: index.html (di dalam bagian <script>)
+
+        // ... (Di bawah FUNGSI PEMBANTU/UTILITY)
+
+        /**
+         * Mengubah string waktu ISO (misal: 1899-12-30T02:17:56.000Z) menjadi HH:MM.
+         * @param {string | number} timeString
+         */
+        function formatTime(timeString) {
+            if (!timeString) return '-';
+            // Paksa nilai menjadi string untuk memastikan fungsi string bisa dipanggil
+            const timeStr = String(timeString);
+
+            // Cari posisi 'T' (pemisah tanggal dan waktu dalam format ISO)
+            const tIndex = timeStr.indexOf('T');
+
+            if (tIndex !== -1) {
+                // Jika format ISO, ambil 5 karakter setelah 'T' (HH:MM)
+                return timeStr.slice(tIndex + 1, tIndex + 6);
+            }
+
+            // Jika format sudah HH:MM (asumsi data langsung dari input form yang berhasil)
+            if (timeStr.match(/^\d{2}:\d{2}$/)) {
+                return timeStr;
+            }
+
+            return '-'; // Default jika format tidak dikenali
+        }
+
+        // ... (Fungsi loadBookings dan lainnya)
+        // --- FUNGSI PENGATUR DATA ---
+
+        /** Mengambil data dari Google Sheet melalui Apps Script. */
+        async function loadBookings() {
+            // Jika Admin, endpoint menggunakan action=get_all. Jika publik, action=get
+            let endpoint = isUserAdmin ? ADMIN_WEB_APP_ENDPOINT + '?action=get_all' : PUBLIC_WEB_APP_ENDPOINT + '?action=get';
+
+            try {
+                const response = await fetch(endpoint);
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('HTTP Error Details:', errorText);
+                    throw new Error(`HTTP Error! Status ${response.status}. Cek URL Apps Script.`);
+                }
+
+                let data = await response.json();
+
+                if (data && data.result === 'error') {
+                    throw new Error(data.message || 'Error dari Apps Script: Cek ID Spreadsheet Anda.');
+                }
+
+                if (!Array.isArray(data)) {
+                    // Jika Apps Script mengembalikan objek non-array (misalnya {})
+                    data = [];
+                }
+
+                // Normalisasi data: Ambil properti dari Apps Script.
+                bookings = data.map(b => ({
+                    id: b.id || b.ID,
+                    row_index: b.row_index || b.ROW_INDEX,
+                    timestamp: b.timestamp || b.waktu_submit || b.WAKTU_SUBMIT,
+                    name: (b.name || b.nama_lengkap || b.NAMA_LENGKAP || ''),
+                    email: (b.email || b.EMAIL || ''),
+
+                    // <<< PERBAIKAN KRITIS DI SINI: PASTIKAN WA ADALAH STRING
+                    whatsapp: String(b.whatsapp || ''), // <--- CONVERT ke STRING
+
+                    venue: b.venue || b.VENUE,
+                    date: b.date || b.tanggal || b.TANGGAL,
+                    start: b.start || b.mulai || b.MULAI,
+                    end: b.end || b.selesai || b.SELESAI,
+                    notes: (b.notes || b.deskripsi || b.DESKRIPSI || ''),
+                    status: (b.status || b.STATUS || 'pending').toLowerCase()
+                }));
+
+            } catch (e) {
+                console.error("Gagal memuat data:", e);
+                bookings = [];
+                alert(`Gagal memuat data jadwal. Silakan coba Refresh. Detail: ${e.message}`);
+            }
+        }
+
+        /** Mengirim data peminjaman baru ke Google Sheet. */
+        async function addBooking(data) {
+            const formData = new URLSearchParams();
+            for (const key in data) {
+                formData.append(key, data[key]);
+            }
+            formData.append('action', 'insert');
+
+            try {
+                const response = await fetch(PUBLIC_WEB_APP_ENDPOINT, {
+                    method: 'POST',
+                    body: formData.toString(),
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('Insert HTTP Error Details:', errorText);
+                    throw new Error(`HTTP Error Status ${response.status} saat insert.`);
+                }
+
+                const result = await response.json();
+                if (result.result === 'success') {
+                    showConfirmation(`Pengajuan Anda berhasil terkirim. ID Pengajuan: ${result.id || new Date().getTime()}.`);
+                    return true;
+                } else {
+                    throw new Error(result.message || 'Gagal menyimpan data.');
+                }
+
+            } catch (error) {
+                alert(`Gagal mengirim pengajuan: ${error.message}`);
+                console.error(error);
+                return false;
+            }
+        }
+
+        /** Mengubah Status (Hanya Admin) */
+        async function updateBookingStatus(rowIndex, newStatus) {
+            if (!isUserAdmin) return alert('Akses ditolak.');
+
+            if (!confirm(`Anda yakin ingin mengubah status data ID #${rowIndex} menjadi ${newStatus.toUpperCase()}?`)) return;
+
+            const formData = new URLSearchParams();
+            formData.append('action', 'update_status');
+            formData.append('row_index', rowIndex);
+            formData.append('status', newStatus);
+
+            try {
+                const response = await fetch(ADMIN_WEB_APP_ENDPOINT, {
+                    method: 'POST',
+                    body: formData.toString(),
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                });
+
+                const result = await response.json();
+
+                if (result.result === 'success') {
+                    await loadBookings();
+                    renderTable();
+                    updateDashboard();
+                    alert(`Status pengajuan berhasil diubah menjadi ${newStatus.toUpperCase()}.`);
+                } else {
+                    throw new Error(result.error || 'Gagal mengubah status.');
+                }
+
+            } catch (error) {
+                alert(`Error saat mengubah status: ${error.message}`);
+                console.error(error);
+            }
+        }
+
+
+        // --- FUNGSI TAMPILAN (RENDER) ---
+
+        /** Mendapatkan badge HTML untuk status. */
+        function getStatusBadge(status) {
+            let className;
+            switch (status) {
+                case 'approved':
+                    className = 's-approved';
+                    break;
+                case 'rejected':
+                    className = 's-rejected';
+                    break;
+                case 'pending':
+                default:
+                    className = 's-pending';
+                    break;
+            }
+            return `<span class="status ${className}">${status.charAt(0).toUpperCase() + status.slice(1)}</span>`;
+        }
+
+
+        /** Menampilkan data ke dalam tabel. */
+        function renderTable() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const filterVen = filterVenue.value;
+            const filterStat = filterStatus.value;
+
+            const filteredBookings = bookings.filter(booking => {
+
+                // PERBAIKAN KRITIS: Memastikan status aman dipanggil .toLowerCase()
+                const bookingStatus = (booking.STATUS || '').toLowerCase();
+
+                // 1. FILTER VISIBILITAS UTAMA (Publik vs Admin)
+                // Jika BUKAN admin, hanya tampilkan yang APPROVED.
+                if (!isUserAdmin && bookingStatus !== 'approved') {
+                    return false;
+                }
+
+                // 2. FILTER PENCARIAN
+                let matchesSearch = booking.name.toLowerCase().includes(searchTerm) ||
+                    (booking.notes ? booking.notes.toLowerCase().includes(searchTerm) : false) ||
+                    (booking.date ? booking.date.includes(searchTerm) : false);
+
+                // Jika Admin, tambahkan pencarian kontak
+                if (isUserAdmin) {
+                    matchesSearch = matchesSearch ||
+                        (booking.whatsapp ? booking.whatsapp.includes(searchTerm) : false) ||
+                        (booking.email ? booking.email.toLowerCase().includes(searchTerm) : false);
+                }
+
+                // 3. FILTER VENUE
+                const matchesVenue = !filterVen || booking.venue === filterVen;
+
+                // 4. FILTER STATUS 
+                const matchesStatus = !filterStat || bookingStatus === filterStat;
+
+                return matchesSearch && matchesVenue && matchesStatus;
+
+            }).sort((a, b) => {
+                // Urutkan berdasarkan tanggal terdekat, lalu berdasarkan status (pending di atas)
+                const dateA = new Date(a.date);
+                const dateB = new Date(b.date);
+                if (dateA - dateB !== 0) return dateA - dateB;
+
+                if (a.status === 'pending' && b.status !== 'pending') return -1;
+                if (a.status !== 'pending' && b.status === 'pending') return 1;
+                return 0;
+            });
+
+            bookingTableBody.innerHTML = '';
+
+            if (filteredBookings.length === 0) {
+                noDataMsg.style.display = 'block';
+                return;
+            }
+            noDataMsg.style.display = 'none';
+
+            filteredBookings.forEach(booking => {
+                const row = bookingTableBody.insertRow();
+
+                // Col 1: Pemohon / Deskripsi
+                let pemohonCellContent;
+                if (isUserAdmin) {
+                    // Admin: Tampilkan Semua Detail Kontak + ID Baris (row_index dari Apps Script)
+                    pemohonCellContent = `
+                        <strong>#${booking.row_index || '?'} ${booking.name}</strong><br>
+                        <span class="muted">${(booking.notes || '').substring(0, 50)}...</span>
+                        <div class="muted">
+                            <a href="mailto:${booking.email}">${booking.email || '-'}</a> | 
+                            <a href="https://wa.me/${(booking.whatsapp || '').replace(/\D/g, '')}" target="_blank">${booking.whatsapp || '-'}</a>
+                        </div>
+                    `;
+                } else {
+                    // Publik: HANYA tampilkan Nama dan Deskripsi
+                    pemohonCellContent = `
+                        <strong>${booking.name}</strong><br>
+                        <span class="muted">${(booking.notes || '').substring(0, 50)}...</span>
+                    `;
+                }
+                row.insertCell().innerHTML = pemohonCellContent;
+
+
+                // Col 2: Tanggal
+                row.insertCell().textContent = booking.date ? new Date(booking.date).toLocaleDateString('id-ID', {
+                    day: '2-digit',
+                    month: 'long',
+                    year: 'numeric'
+                }) : '-';
+
+                // Kolom 3: Jam (Jam Awal - Jam Akhir)
+                // GANTI BARIS INI:
+                row.insertCell().textContent = `${formatTime(booking.start)} - ${formatTime(booking.end)}`; // <--- SUDAH DIREVISI
+
+                // Col 4: Status
+                row.insertCell().innerHTML = getStatusBadge(booking.status);
+
+                // Col 5: Aksi (Kolom Aksi hanya tampil untuk Admin)
+                const actionCell = row.insertCell();
+                actionCell.className = 'action-cell';
+
+                if (isUserAdmin && booking.row_index) {
+                    const actionGroup = document.createElement('div');
+                    actionGroup.className = 'action-btn-group';
+
+                    // Tombol Approve
+                    if (booking.status !== 'approved') {
+                        const approveBtn = document.createElement('button');
+                        approveBtn.className = 'btn small s-approved';
+                        approveBtn.textContent = '✅ Setuju';
+                        approveBtn.onclick = () => updateBookingStatus(booking.row_index, 'approved');
+                        actionGroup.appendChild(approveBtn);
+                    }
+
+                    // Tombol Reject
+                    if (booking.status !== 'rejected') {
+                        const rejectBtn = document.createElement('button');
+                        rejectBtn.className = 'btn small s-rejected';
+                        rejectBtn.textContent = '❌ Tolak';
+                        rejectBtn.onclick = () => updateBookingStatus(booking.row_index, 'rejected');
+                        actionGroup.appendChild(rejectBtn);
+                    }
+
+                    actionCell.appendChild(actionGroup);
+
+                } else {
+                    actionCell.textContent = '';
+                }
+            });
+        }
+
+        /** Memperbarui tampilan dashboard admin. */
+        function updateDashboard() {
+            if (!isUserAdmin) {
+                adminControls.classList.add('hidden');
+                adminStatusMsg.textContent = 'Login Admin di atas untuk melihat detail statistik.';
+                downloadBtn.classList.add('hidden');
+                hiddenAdminStatusOptions.forEach(el => el.classList.add('hidden'));
+                return;
+            }
+
+            adminControls.classList.remove('hidden');
+            adminStatusMsg.textContent = 'Dashboard aktif. Anda memiliki hak akses penuh.';
+            downloadBtn.classList.remove('hidden');
+            hiddenAdminStatusOptions.forEach(el => el.classList.remove('hidden'));
+
+            const total = bookings.length;
+            const pending = bookings.filter(b => b.status === 'pending').length;
+            const approved = bookings.filter(b => b.status === 'approved').length;
+            const rejected = bookings.filter(b => b.status === 'rejected').length;
+
+            document.getElementById('statTotal').textContent = total;
+            document.getElementById('statPending').textContent = pending;
+            document.getElementById('statApproved').textContent = approved;
+
+            renderCharts(total, pending, approved, rejected);
+        }
+
+        /** Render Charts.js */
+        function renderCharts(total, pending, approved, rejected) {
+            if (chartStatusInstance) chartStatusInstance.destroy();
+            if (chartTrendInstance) chartTrendInstance.destroy();
+
+            // Chart Status Pie
+            const ctxStatus = document.getElementById('chartStatus').getContext('2d');
+            chartStatusInstance = new Chart(ctxStatus, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Disetujui', 'Menunggu', 'Ditolak'],
+                    datasets: [{
+                        data: [approved, pending, rejected],
+                        backgroundColor: [APPROVED_COLOR, PENDING_COLOR, REJECTED_COLOR],
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Distribusi Status Pengajuan'
+                        }
+                    }
+                }
+            });
+
+            // Chart Trend (Bulan)
+            const trendData = bookings.reduce((acc, booking) => {
+                if (!booking.date) return acc;
+
+                const date = new Date(booking.date);
+                if (isNaN(date)) return acc;
+
+                const monthYear = date.toLocaleDateString('id-ID', { year: 'numeric', month: 'short' });
+                if (!acc[monthYear]) acc[monthYear] = 0;
+                acc[monthYear]++;
+                return acc;
+            }, {});
+
+            const sortedMonths = Object.keys(trendData).sort((a, b) => {
+                const dateA = new Date(a.replace(/(\w+)\s(\d+)/, '$1 1, $2'));
+                const dateB = new Date(b.replace(/(\w+)\s(\d+)/, '$1 1, $2'));
+                return dateA - dateB;
+            });
+
+            const trendLabels = sortedMonths.slice(-6);
+            const trendValues = trendLabels.map(label => trendData[label] || 0);
+
+            const ctxTrend = document.getElementById('chartTrend').getContext('2d');
+            chartTrendInstance = new Chart(ctxTrend, {
+                type: 'bar',
+                data: {
+                    labels: trendLabels,
+                    datasets: [{
+                        label: 'Jumlah Pengajuan',
+                        data: trendValues,
+                        backgroundColor: [
+                            '#B83B5E',
+                            '#6A2C70',
+                            '#F08A5D',
+                            '#4A4A4A',
+                            '#9D3B4E',
+                            '#C85E8C'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false },
+                        title: {
+                            display: true,
+                            text: 'Tren Pengajuan (6 Bulan Terakhir)'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 0
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        /** Inisialisasi Aplikasi */
+        async function init() {
+            await loadBookings();
+            renderTable();
+            updateDashboard();
+        }
+
+        // 1. Submit Form
+        bookingForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sedang Mengirim...';
+
+            const data = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                whatsapp: document.getElementById('whatsapp').value,
+                venue: document.getElementById('venue').value,
+                date: document.getElementById('date').value,
+                start: document.getElementById('start').value,
+                end: document.getElementById('end').value,
+                notes: document.getElementById('notes').value
+            };
+
+            const success = await addBooking(data);
+
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Kirim Pengajuan';
+
+            if (success) {
+                init();
+            }
+        });
+
+        // 2. Login Admin
+        adminLoginBtn.addEventListener('click', () => {
+            const enteredPass = adminPasswordInput.value;
+            if (enteredPass === ADMIN_PASSWORD) {
+                isUserAdmin = true;
+                adminPasswordInput.classList.add('hidden');
+                adminLoginBtn.classList.add('hidden');
+                logoutBtn.classList.remove('hidden');
+                alert('Login Admin Berhasil!');
+                init();
+            } else {
+                alert('Password Admin Salah!');
+                adminPasswordInput.value = '';
+            }
+        });
+
+        // 3. Logout Admin
+        logoutBtn.addEventListener('click', () => {
+            isUserAdmin = false;
+            adminPasswordInput.classList.remove('hidden');
+            adminLoginBtn.classList.remove('hidden');
+            logoutBtn.classList.add('hidden');
+            adminPasswordInput.value = '';
+            init();
+        });
+
+        // 4. Filter, Search, dan Refresh
+        searchInput.addEventListener('input', renderTable);
+        filterVenue.addEventListener('change', renderTable);
+        filterStatus.addEventListener('change', renderTable);
+        refreshBtn.addEventListener('click', init);
+
+        // 5. Download Excel (Hanya Admin)
+        downloadBtn.addEventListener('click', () => {
+            if (!isUserAdmin) return alert('Akses Unduh ditolak.');
+
+            const excelData = bookings.map(b => ({
+                "ID Pengajuan": b.id,
+                "Waktu Submit": b.timestamp,
+                "Nama Pemohon": b.name,
+                "Email": b.email,
+                "WhatsApp": b.whatsapp,
+                "Venue": b.venue,
+                "Tanggal Kegiatan": b.date,
+                "Mulai": b.start,
+                "Selesai": b.end,
+                "Keperluan": b.notes,
+                "Status": (b.status || 'Pending').toUpperCase()
+            }));
+
+            const ws = XLSX.utils.json_to_sheet(excelData);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Data Peminjaman");
+            XLSX.writeFile(wb, "Data_Peminjaman_Balai_Kelurahan.xlsx");
+        });
+
+
+        // --- MULAI APLIKASI ---
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('date').valueAsDate = new Date();
+            init();
+        });
+    </script>
+</body>
+
+</html>
